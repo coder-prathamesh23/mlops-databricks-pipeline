@@ -26,7 +26,7 @@ jobs:
         run: PYTHONPATH=. pytest
 
       - name: Setup Databricks CLI
-        uses: databricks/setup-cli@v0.2.1
+        uses: databricks/setup-cli@v0.2.2
 
       - name: Deploy and Run on Databricks
         env:
