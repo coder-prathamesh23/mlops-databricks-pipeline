@@ -25,18 +25,17 @@ jobs:
       - name: Run Unit Tests
         run: PYTHONPATH=. pytest
 
+      - name: Setup Databricks CLI
+        uses: databricks/setup-cli@v0.2.1
+
       - name: Deploy and Run on Databricks
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          # Install the NEW, UNIFIED Databricks CLI
-          curl -fsSL https://docs.databricks.com/en/dev-tools/cli/install.sh | sh
-
-          # The following commands use the new CLI's syntax
+          # Now that the CLI is installed and configured by the action, just run the commands.
           databricks fs cp src/pipeline.py dbfs:/pipelines/pyspark_pipeline.py --overwrite
 
-          # Submit the job using the new CLI's 'jobs submit' command
           databricks jobs submit --json '{
             "name": "CICD_Run_PySpark_Pipeline",
             "new_cluster": {
