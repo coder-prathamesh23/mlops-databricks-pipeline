@@ -40,7 +40,7 @@ def main():
     raw_df = extract_from_csv(RAW_CSV_PATH, spark)
     cleaned_df = transform_data(raw_df)
     load_to_delta(cleaned_df, DELTA_TABLE_PATH)
-    spark.stop() #This causes workload to fail It is automatically taken care of by Databricks
+    #spark.stop() This causes workload to fail It is automatically taken care of by Databricks
     print("Pipeline finished successfully.")
 
 if __name__ == "__main__":
