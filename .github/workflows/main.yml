@@ -37,16 +37,21 @@ jobs:
           databricks fs cp src/pipeline.py dbfs:/pipelines/pyspark_pipeline.py --overwrite
 
           databricks jobs submit --json '{
-            "name": "CICD_Run_PySpark_Pipeline",
-            "new_cluster": {
-              "spark_version": "13.3.x-scala2.12",
-              "node_type_id": "i3.xlarge",
-              "num_workers": 1,
-              "aws_attributes": {
-                "instance_profile_arn": "arn:aws:iam::511194961172:instance-profile/DatabricksS3Role"
-              }
-            },
-            "spark_python_task": {
-              "python_file": "dbfs:/pipelines/pyspark_pipeline.py"
-            }
-          }'
+            "run_name": "CICD_Run_PySpark_Pipeline",
+            "tasks": [
+                {
+                "task_key": "main_etl_task",
+                "new_cluster": {
+                    "spark_version": "13.3.x-scala2.12",
+                    "node_type_id": "i3.xlarge",
+                    "num_workers": 1,
+                    "aws_attributes": {
+                    "instance_profile_arn": "arn:aws:iam::511194961172:instance-profile/DatabricksS3Role"
+                    }
+                },
+                "spark_python_task": {
+                    "python_file": "dbfs:/pipelines/pyspark_pipeline.py"
+                }
+                }
+            ]
+            }'
