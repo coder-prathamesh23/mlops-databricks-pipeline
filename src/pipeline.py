@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import col, when
 from pyspark.sql.types import IntegerType, DoubleType, TimestampType
 
-# Define paths using S3 instead of DBFS
+# Define paths using S3 instead of DBFS 
 RAW_CSV_PATH = "s3://my-databricks-delta-lake-bucket/raw/orders_data.csv"  # For demo, still using a dummy file on DBFS
 DELTA_TABLE_PATH = "s3://my-databricks-delta-lake-bucket/orders_cleaned" # IMPORTANT: S3 path
 
