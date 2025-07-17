@@ -31,7 +31,7 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           # Install the NEW, UNIFIED Databricks CLI
-          curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | sh
+          curl -fsSL https://docs.databricks.com/en/dev-tools/cli/install.sh | sh
 
           # The following commands use the new CLI's syntax
           databricks fs cp src/pipeline.py dbfs:/pipelines/pyspark_pipeline.py --overwrite
