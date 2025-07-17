@@ -30,12 +30,13 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          pip install databricks-cli
+          # Install the NEW, UNIFIED Databricks CLI
+          curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | sh
 
-          # Deploy the Python script to a known location in DBFS
+          # The following commands use the new CLI's syntax
           databricks fs cp src/pipeline.py dbfs:/pipelines/pyspark_pipeline.py --overwrite
 
-          # Submit the script as a one-time job run
+          # Submit the job using the new CLI's 'jobs submit' command
           databricks jobs submit --json '{
             "name": "CICD_Run_PySpark_Pipeline",
             "new_cluster": {
