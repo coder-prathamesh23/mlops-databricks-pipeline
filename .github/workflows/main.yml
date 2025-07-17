@@ -1,0 +1,52 @@
+name: Databricks CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow on pushes to the main branch
+
+jobs:
+  deploy-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Unit Tests
+        run: pytest
+
+      - name: Deploy and Run on Databricks
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          pip install databricks-cli
+
+          # Deploy the Python script to a known location in DBFS
+          databricks fs cp src/pipeline.py dbfs:/pipelines/pyspark_pipeline.py --overwrite
+
+          # Submit the script as a one-time job run
+          databricks jobs submit --json '{
+            "name": "CICD_Run_PySpark_Pipeline",
+            "new_cluster": {
+              "spark_version": "13.3.x-scala2.12",
+              "node_type_id": "i3.xlarge",
+              "num_workers": 1,
+              "aws_attributes": {
+                "instance_profile_arn": "arn:aws:iam::511194961172:instance-profile/DatabricksS3Role"
+              }
+            },
+            "spark_python_task": {
+              "python_file": "dbfs:/pipelines/pyspark_pipeline.py"
+            }
+          }'
